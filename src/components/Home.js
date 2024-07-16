@@ -15,7 +15,7 @@ const HomePage = () => {
           With 13 years of experience in full-stack development, I specialize in building innovative and user-friendly web solutions. My expertise spans JavaScript, React, Angular, and Node.js. I love turning complex problems into simple, beautiful, and intuitive designs.
         </p>
         <div className="button-container">
-          <a href="/about" className="cta-button">Learn More</a>
+          <a href="#about" className="cta-button">Learn More</a>
         </div>
       </div>
     </div>
