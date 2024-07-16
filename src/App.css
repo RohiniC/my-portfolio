@@ -16,6 +16,7 @@
   --home-text-color: #333333; /* Dark Gray */
 }
 
+
 /* Light Theme 2 Variables */
 :root[data-theme='light2'] {
   --primary-color: #27ae60; /* Green */
