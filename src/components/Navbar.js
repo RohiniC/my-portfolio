@@ -1,65 +1,172 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../ThemeContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const { theme, setTheme } = useTheme(); // Destructuring theme and setTheme
+  const { theme, toggleTheme, isCollapsed, toggleCollapse } = useTheme();
+  const location = useLocation();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [showThemeMsg, setShowThemeMsg] = useState(() => {
+    return localStorage.getItem('themeMsgShown') !== 'true';
+  });
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
-  const toggleTheme = () => {
-    if (theme === 'light1') {
-      setTheme('light2');
-    } else if (theme === 'light2') {
-      setTheme('darkA');
-    } else if (theme === 'darkA') {
-      setTheme('darkB');
-    } else {
-      setTheme('light1');
+  const toggleMobileMenu = () => {
+    setIsMobileOpen(!isMobileOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileOpen(false);
+  };
+
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light1':
+        return 'fas fa-sun';
+      case 'light2':
+        return 'fas fa-leaf';
+      case 'darkA':
+        return 'fas fa-moon';
+      case 'darkB':
+        return 'fas fa-star';
+      default:
+        return 'fas fa-moon';
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (theme) {
+      case 'light1':
+        return 'Switch to Light Green Theme';
+      case 'light2':
+        return 'Switch to Light Blue Theme';
+      case 'darkA':
+        return 'Switch to Dark Cyan Theme';
+      case 'darkB':
+        return 'Switch to Dark Green Theme';
+      default:
+        return 'Switch Theme';
     }
   };
 
   return (
-    <nav className={`navbar ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="navbar-menu">
-        <Link to="/" className="navbar-item" title="Home">
-          <i className="fa fa-home"></i>
-          <span className="navbar-item-text">Home</span>
-        </Link>
-        <Link to="/about" className="navbar-item" title="About">
-          <i className="fa fa-user"></i>
-          <span className="navbar-item-text">About</span>
-        </Link>
-        <Link to="/skills" className="navbar-item" title="Skills">
-          <i className="fa fa-cogs"></i>
-          <span className="navbar-item-text">Skills</span>
-        </Link>
-        <Link to="/experience" className="navbar-item" title="Experience">
-          <i className="fa fa-briefcase"></i>
-          <span className="navbar-item-text">Experience</span>
-        </Link>
-        <Link to="/projects" className="navbar-item" title="Projects">
-          <i className="fa fa-folder"></i>
-          <span className="navbar-item-text">Projects</span>
-        </Link>
-        <Link to="/contact" className="navbar-item" title="Contact">
-          <i className="fa fa-envelope"></i>
-          <span className="navbar-item-text">Contact</span>
-        </Link>
-      </div>
-      <div className="navbar-controls">
-        <button className="navbar-toggle" onClick={toggleCollapse}>
-          <i className={`fa-solid fa-circle-chevron-${isCollapsed ? 'right' : 'left'} chevron-icon`}></i>
-        </button>
-        <button className="theme-toggle" onClick={toggleTheme}>
-          <i className={`fa ${theme === 'light1' || theme === 'light2' ? 'fa-sun' : 'fa-moon'}`}></i>
-        </button>
-      </div>
-    </nav>
+    <>
+      <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+        <i className="fas fa-bars"></i>
+      </button>
+
+      <div className={`mobile-overlay ${isMobileOpen ? 'mobile-open' : ''}`} onClick={closeMobileMenu}></div>
+
+      <nav className={`navbar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
+        <div className="navbar-header">
+          <Link to="/" className="navbar-brand" onClick={closeMobileMenu}>
+            <i className="fas fa-user navbar-brand-icon"></i>
+            <span className="navbar-text">RC</span>
+          </Link>
+        </div>
+
+        <ul className="navbar-menu">
+          <li className="navbar-item">
+            <Link 
+              to="/" 
+              className={`navbar-link ${isActive('/') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-home navbar-icon"></i>
+              <span className="navbar-text">Home</span>
+            </Link>
+          </li>
+          
+          <li className="navbar-item">
+            <Link 
+              to="/about" 
+              className={`navbar-link ${isActive('/about') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-user navbar-icon"></i>
+              <span className="navbar-text">About</span>
+            </Link>
+          </li>
+          
+          <li className="navbar-item">
+            <Link 
+              to="/skills" 
+              className={`navbar-link ${isActive('/skills') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-tools navbar-icon"></i>
+              <span className="navbar-text">Skills</span>
+            </Link>
+          </li>
+          
+          <li className="navbar-item">
+            <Link 
+              to="/experience" 
+              className={`navbar-link ${isActive('/experience') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-briefcase navbar-icon"></i>
+              <span className="navbar-text">Experience</span>
+            </Link>
+          </li>
+          
+          <li className="navbar-item">
+            <Link 
+              to="/projects" 
+              className={`navbar-link ${isActive('/projects') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-project-diagram navbar-icon"></i>
+              <span className="navbar-text">Projects</span>
+            </Link>
+          </li>
+          
+          <li className="navbar-item">
+            <Link 
+              to="/contact" 
+              className={`navbar-link ${isActive('/contact') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              <i className="fas fa-envelope navbar-icon"></i>
+              <span className="navbar-text">Contact</span>
+            </Link>
+          </li>
+        </ul>
+
+        <div className="navbar-controls">
+          <button className="navbar-toggle" onClick={toggleCollapse}>
+            <i className={`fas fa-chevron-${isCollapsed ? 'right' : 'left'}`}></i>
+          </button>
+          <div className="theme-toggle-wrapper">
+            <button className="theme-toggle" onClick={() => {
+              toggleTheme();
+              if (showThemeMsg) {
+                setShowThemeMsg(false);
+                localStorage.setItem('themeMsgShown', 'true');
+              }
+            }} title={getThemeLabel()}>
+              <i className={getThemeIcon()}></i>
+            </button>
+            {showThemeMsg && (
+              <div className="theme-popover">
+                <span>Try changing the theme!</span>
+                <button className="theme-popover-close" onClick={() => {
+                  setShowThemeMsg(false);
+                  localStorage.setItem('themeMsgShown', 'true');
+                }} aria-label="Close popover">
+                  &times;
+                </button>
+                <div className="theme-popover-arrow" />
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    </>
   );
 };
 
